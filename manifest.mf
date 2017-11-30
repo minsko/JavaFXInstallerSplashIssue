@@ -3,4 +3,5 @@ X-COMMENT: Main-Class will be added automatically by build
 Codebase: *.oracle.com
 Permissions: sandbox
 Application-Name: Splash Demo
+SplashScreen-Image: misc/images/splash.gif
 
