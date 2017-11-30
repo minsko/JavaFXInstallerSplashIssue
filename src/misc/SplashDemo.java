@@ -38,6 +38,8 @@ package misc;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.lang.management.ManagementFactory;
 
 public class SplashDemo extends Frame implements ActionListener {
     private boolean splashExists;
@@ -64,7 +66,19 @@ public class SplashDemo extends Frame implements ActionListener {
         mb.add(m1);
         handleSplash();
         add(new Label(splashExists ? "Splash worked" : "Splash did not work",
-            Label.CENTER), BorderLayout.CENTER);
+            Label.CENTER), BorderLayout.SOUTH);
+        Panel panel = new Panel();
+        panel.setLayout(new GridLayout(0, 1));
+        List<String> args = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        if (args.size() == 0) {
+            panel.add(new Label("Input Arguments: none", Label.CENTER));
+        } else {
+            panel.add(new Label("Input Arguments:", Label.CENTER));
+            for (String arg : args) {
+                panel.add(new Label("\n" + arg, Label.CENTER));
+            }
+        }
+        add(panel, BorderLayout.CENTER);
         setVisible(true);
         toFront();
     }
