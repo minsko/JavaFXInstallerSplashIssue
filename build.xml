@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="SplashDemo" default="default" basedir=".">
+<project name="SplashDemo" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
     <import file="nbproject/build-impl.xml"/>
     <target name="-do-jar-with-libraries-without-manifest"/>
 
+    <property environment="env"/>
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+        uri="javafx:com.sun.javafx.tools.ant"
+        classpath="${env.JAVA_HOME}/lib/ant-javafx.jar"/>
+
+    <target name="createMacInstaller">
+         <antcall target="-createInstaller" inheritRefs="true">
+            <param name="install.type" value="pkg"/>
+            <param name="appDir" value="Java"/>
+        </antcall>
+    </target>
+
+    <target name="createWindowsInstaller">
+         <antcall target="-createInstaller" inheritRefs="true">
+            <param name="install.type" value="exe"/>
+            <param name="appDir" value="app"/>
+        </antcall>
+    </target>
+
+    <target name="createLinuxInstaller">
+         <antcall target="-createInstaller" inheritRefs="true">
+            <param name="install.type" value="deb"/>
+            <param name="appDir" value="app"/>
+        </antcall>
+    </target>
+
+    <target name="-createInstaller">
+        <delete dir="installer" quiet="true"/>
+        <copy file="src/misc/images/splash.gif" toDir="dist" overwrite="true"/>
+        <fx:deploy nativeBundles="${install.type}" outdir="installer" outfile="SplashIssueInstaller" verbose="true">
+            <fx:application mainClass="misc.SplashDemo" name="SplashIssue"
+             toolkit="swing" version="1.0"/>
+            <fx:platform j2se="7.0">
+                <fx:jvmarg value="-splash:$APPDIR/${appDir}/splash.gif"/>
+            </fx:platform>
+            <fx:preferences install="true" menu="true" shortcut="false"/>
+            <fx:info category="Development" copyright="" title="SplashIssue" vendor="" />
+            <fx:bundleArgument arg="mac.CFBundleIdentifier" value="misc.javafx.splashissue"/>
+            <fx:bundleArgument arg="installdirChooser" value="true"/>
+            <fx:bundleArgument arg="win.menuGroup" value="SplashIssue"/>
+            <fx:resources>
+                <fx:fileset dir="dist">
+                    <exclude name="javadoc"/>
+                </fx:fileset>
+            </fx:resources>
+        </fx:deploy>
+    </target>
 </project>
