@@ -40,6 +40,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class SplashDemo extends Frame implements ActionListener {
+    private boolean splashExists;
     static void renderSplashFrame(Graphics2D g, int frame) {
         final String[] comps = {"foo", "bar", "baz"};
         g.setComposite(AlphaComposite.Clear);
@@ -61,29 +62,37 @@ public class SplashDemo extends Frame implements ActionListener {
         MenuBar mb = new MenuBar();
         setMenuBar(mb);
         mb.add(m1);
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash == null) {
-            System.out.println("SplashScreen.getSplashScreen() returned null");
-            return;
-        }
-        Graphics2D g = splash.createGraphics();
-        if (g == null) {
-            System.out.println("g is null");
-            return;
-        }
-        for(int i=0; i<100; i++) {
-            renderSplashFrame(g, i);
-            splash.update();
-            try {
-                Thread.sleep(90);
-            }
-            catch(InterruptedException e) {
-            }
-        }
-        splash.close();
+        handleSplash();
+        add(new Label(splashExists ? "Splash worked" : "Splash did not work",
+            Label.CENTER), BorderLayout.CENTER);
         setVisible(true);
         toFront();
     }
+
+    private void handleSplash() {
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+            if (splash == null) {
+                System.out.println("SplashScreen.getSplashScreen() returned null");
+                return;
+            }
+            Graphics2D g = splash.createGraphics();
+            if (g == null) {
+                System.out.println("g is null");
+                return;
+            }
+            splashExists=true;
+            for(int i=0; i<100; i++) {
+                renderSplashFrame(g, i);
+                splash.update();
+                try {
+                    Thread.sleep(90);
+                }
+                catch(InterruptedException e) {
+                }
+            }
+            splash.close();
+    }
+
     public void actionPerformed(ActionEvent ae) {
         System.exit(0);
     }
